@@ -5,10 +5,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -181,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
                 boucle=0;
                 while (true) {
                     if(pause==false) {
+
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -215,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
             try
             {
                 while(true) {
-                    URL url = new URL("http://contactsql.esy.es/sync/select.php");
+                    URL url = new URL("http://facecuttest2.kalanda.info/Facecut_WEB/select.php");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestProperty("User-Agent", "");
                     connection.setRequestMethod("POST");
@@ -293,8 +296,12 @@ public class MainActivity extends AppCompatActivity {
             r = new Random();
             aa = new Random();
             bb = new Random();
-            a = 0;
-            b = 0;
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            a = (size.x)/2;
+            b = (size.y)/2;
+
         }
 
         public void onResumeMySurfaceView() {
@@ -321,37 +328,56 @@ public class MainActivity extends AppCompatActivity {
          * Recursive method to draw the trajectory of the robot on the SurfaceView
          */
         private void bougerRobot() {
-
             int commande = traduireDirection();
 
             int var = commande;
+            surfaceHolder.getSurface(); // Enlever pour voir déplacement sans mémorisation
             canvas = surfaceHolder.lockCanvas();
 
             switch (var) {
                 case 1: //nord est      NE
-                    a += 50;
-                    b -= 50;
-                    path.rLineTo(a, b);
-                    canvas.drawPath(path, paint);
+                    a += 10;
+                    b -= 10;
+                    //path.rLineTo(a, b);
+                    canvas.drawCircle(a, b, 4, paint);
                     surfaceHolder.unlockCanvasAndPost(canvas);
-                    bougerRobot();
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }                    bougerRobot();
                     break;
                 case 2: //nord ouest    NO
-                    a -= 50;
-                    b -= 50;
-                    path.rLineTo(a, b);
+                    a -= 10;
+                    b -= 10;
+                    canvas.drawCircle(a, b, 4, paint);
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     bougerRobot();
                     break;
                 case 3: //sud est       SE
-                    a += 50;
-                    b += 50;
-                    path.rLineTo(a, b);
+                    a += 10;
+                    b += 10;
+                    canvas.drawCircle(a, b, 4, paint);
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     bougerRobot();
                     break;
                 case 4: //sud ouest     SO
-                    a -= 50;
-                    b += 50;
-                    path.rLineTo(a, b);
+                    a -= 10;
+                    b += 10;
+                    canvas.drawCircle(a, b, 4, paint);
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     bougerRobot();
                     break;
                 case 0: //stop
@@ -372,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
          */
         private int traduireDirection(){
             int commande;
-            String direction1=n_s;
+            String direction1 = n_s;
             String direction2 = e_o;
 
             if (direction1.equals("N") && direction2.equals("E")) {
@@ -409,6 +435,7 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         public void run() {
+            // TODO Auto-generated method stub
             while (running) {
                 if (surfaceHolder.getSurface().isValid()) {
 
@@ -425,5 +452,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 }
 
